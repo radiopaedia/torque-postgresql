@@ -15,11 +15,6 @@ module Torque
           @inversed = self.target.present?
         end
 
-        # The binds and the cache are getting mixed and caching the wrong query
-        def skip_statement_cache?(*)
-          super || reflection.connected_through_array?
-        end
-
         private
 
           # This is mainly for the has many when connect through an array to add
