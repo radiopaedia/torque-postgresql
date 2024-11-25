@@ -21,7 +21,8 @@ module Torque
 
           # Correctly correlate records when they are connected theough an array
           def set_inverse(record)
-            return super unless connected_through_array? && @reflection.macro == :has_many
+            return super unless connected_through_array?
+            return super unless @reflection.macro == :has_many || @reflection.macro == :has_one
 
             # Only the first owner is associated following the same instruction
             # on the original implementation
@@ -36,7 +37,8 @@ module Torque
           # Requires a slight change when running on has many since the value
           # of the foreign key being an array
           def load_records(raw_records = nil)
-            return super unless connected_through_array? && @reflection.macro == :has_many
+            return super unless connected_through_array?
+            return super unless @reflection.macro == :has_many || @reflection.macro == :has_one
 
             @records_by_owner = {}.compare_by_identity
             raw_records ||= loader_query.records_for([self])
@@ -80,6 +82,16 @@ module Torque
               end
             end
 
+            # Specific run for belongs_many association
+            def run_array_for_has_one
+              # Add reverse to has_many
+              records = groupped_records
+              owners.each do |owner|
+                items = records.values_at(*records.keys.select {|k| k.include?(owner[owner_key_name])})
+                associate_records_to_owner(owner, items.flatten)
+              end
+            end
+
             # Specific run for has_many association
             def run_array_for_has_many
               # Add reverse to belongs_to_many
@@ -105,9 +117,14 @@ module Torque
 
             def associate_records_to_owner(owner, records)
               return super unless connected_through_array?
+              return super if records.empty?
               association = owner.association(reflection.name)
               association.loaded!
-              association.target.concat(records)
+              if @reflection.macro == :has_one
+                association.target = records.sole
+              else
+                association.target.concat(records)
+              end
             end
 
             def groupped_records

@@ -12,6 +12,7 @@ module Torque
 
           self.target ||= []
           self.target.push(record) unless self.target.include?(record)
+          loaded! if owner[reflection.association_foreign_key] == [record[reflection.association_primary_key]]
           @inversed = self.target.present?
         end
 
