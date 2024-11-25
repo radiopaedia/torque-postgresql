@@ -123,9 +123,9 @@ RSpec.describe 'Arel' do
       quoted = ::Arel::Nodes::build_quoted([1])
       casted = ::Arel::Nodes::build_quoted(1, attribute)
 
-      expect(attribute.cast('text').to_sql).to be_eql('"a"."sample"::text')
-      expect(quoted.cast('bigint', true).to_sql).to be_eql('ARRAY[1]::bigint[]')
-      expect(casted.cast('string').to_sql).to be_eql("1::string")
+      expect(attribute.cast_with_array_support('text').to_sql).to be_eql('"a"."sample"::text')
+      expect(quoted.cast_with_array_support('bigint', true).to_sql).to be_eql('ARRAY[1]::bigint[]')
+      expect(casted.cast_with_array_support('string').to_sql).to be_eql("1::string")
     end
   end
 end

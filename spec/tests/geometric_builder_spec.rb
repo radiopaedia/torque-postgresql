@@ -59,51 +59,51 @@ RSpec.describe 'Geometries' do
       before { allow(instance).to receive(:config_class).and_return(config_class) }
 
       it 'accepts string values' do
-        expect(instance.cast('')).to be_nil
+        expect(instance.cast_with_array_support('')).to be_nil
 
         expect(config_class).to receive(:new).with(1, 2, 3, 4).and_return(4)
-        expect(instance.cast('1, 2, 3, 4')).to be_eql(4)
+        expect(instance.cast_with_array_support('1, 2, 3, 4')).to be_eql(4)
 
         expect(config_class).to receive(:new).with(1, 2, 3, 4).and_return(8)
-        expect(instance.cast('(1, {2}, <3>, 4)')).to be_eql(8)
+        expect(instance.cast_with_array_support('(1, {2}, <3>, 4)')).to be_eql(8)
 
         expect(config_class).to receive(:new).with(1, 2, 3, 4).and_return(7)
-        expect(instance.cast('1, 2, 3, 4, 5, 6')).to be_eql(7)
+        expect(instance.cast_with_array_support('1, 2, 3, 4, 5, 6')).to be_eql(7)
 
         expect(config_class).to receive(:new).with(1.0, 2.0, 3.0, 4.0).and_return(1)
-        expect(instance.cast('1.0, 2.0, 3.0, 4.0')).to be_eql(1)
+        expect(instance.cast_with_array_support('1.0, 2.0, 3.0, 4.0')).to be_eql(1)
 
-        expect { instance.cast(['6 6 6']) }.to raise_error(RuntimeError, 'Invalid format')
+        expect { instance.cast_with_array_support(['6 6 6']) }.to raise_error(RuntimeError, 'Invalid format')
       end
 
       it 'accepts hash values' do
-        expect(instance.cast({})).to be_nil
+        expect(instance.cast_with_array_support({})).to be_nil
 
-        expect { instance.cast({ 'a' => 1, 'b' => 2 }) }.to raise_error(RuntimeError, 'Invalid format')
+        expect { instance.cast_with_array_support({ 'a' => 1, 'b' => 2 }) }.to raise_error(RuntimeError, 'Invalid format')
 
         expect(config_class).to receive(:new).with(1, 2, 3, 4).and_return(4)
-        expect(instance.cast({ 'a' => 1, 'b' => 2 , 'c' => 3, 'd' => 4})).to be_eql(4)
+        expect(instance.cast_with_array_support({ 'a' => 1, 'b' => 2 , 'c' => 3, 'd' => 4})).to be_eql(4)
 
         expect(config_class).to receive(:new).with(1.0, 2.0, 3.0, 4.0).and_return(5)
-        expect(instance.cast({ 'a' => 1.0, 'b' => 2.0, 'c' => 3.0, 'd' => 4.0})).to be_eql(5)
+        expect(instance.cast_with_array_support({ 'a' => 1.0, 'b' => 2.0, 'c' => 3.0, 'd' => 4.0})).to be_eql(5)
 
         expect(config_class).to receive(:new).with(1, 2, 3, 4).and_return(2)
-        expect(instance.cast({ a: 1, b: 2 , c: 3, d: 4, e: 5, f: 6})).to be_eql(2)
+        expect(instance.cast_with_array_support({ a: 1, b: 2 , c: 3, d: 4, e: 5, f: 6})).to be_eql(2)
       end
 
       it 'accepts array values' do
         expect(config_class).to receive(:new).with(1, 2, 3, 4).and_return(4)
-        expect(instance.cast([1, 2, 3, 4])).to be_eql(4)
+        expect(instance.cast_with_array_support([1, 2, 3, 4])).to be_eql(4)
 
         expect(config_class).to receive(:new).with(1.1, 1.2, 1.3, 1.4).and_return(9)
-        expect(instance.cast(['1.1', '1.2', '1.3', '1.4'])).to be_eql(9)
+        expect(instance.cast_with_array_support(['1.1', '1.2', '1.3', '1.4'])).to be_eql(9)
 
         expect(config_class).to receive(:new).with(6, 5, 4, 3).and_return(2)
-        expect(instance.cast([6, 5, 4, 3, 2, 1])).to be_eql(2)
+        expect(instance.cast_with_array_support([6, 5, 4, 3, 2, 1])).to be_eql(2)
 
-        expect(instance.cast([])).to be_nil
+        expect(instance.cast_with_array_support([])).to be_nil
 
-        expect { instance.cast([6, 5, 4]) }.to raise_error(RuntimeError, 'Invalid format')
+        expect { instance.cast_with_array_support([6, 5, 4]) }.to raise_error(RuntimeError, 'Invalid format')
       end
     end
 
@@ -121,7 +121,7 @@ RSpec.describe 'Geometries' do
       end
 
       it 'accepts hash value' do
-        expect { instance.cast({a: 1, b: 2, c: 3}) }.to raise_error(RuntimeError, 'Invalid format')
+        expect { instance.cast_with_array_support({a: 1, b: 2, c: 3}) }.to raise_error(RuntimeError, 'Invalid format')
         expect(instance.serialize({a: 1, b: 2, c: 3, d: 4})).to be_eql('(1, 2, <3, {4}>)')
         expect(instance.serialize({a: 1, b: 2, c: 3, d: 4, e: 5, f: 6})).to be_eql('(1, 2, <3, {4}>)')
       end
@@ -163,7 +163,7 @@ RSpec.describe 'Geometries' do
     let(:klass) { Torque::PostgreSQL::Adapter::OID::Box }
     let(:value_klass) { Torque::PostgreSQL::Box }
     let(:instance) { klass.new }
-    let(:value_instance) { instance.cast([1, 2, 3, 4]) }
+    let(:value_instance) { instance.cast_with_array_support([1, 2, 3, 4]) }
 
     before { allow(instance).to receive(:config_class).and_return(value_klass) }
 
@@ -191,7 +191,7 @@ RSpec.describe 'Geometries' do
     let(:klass) { Torque::PostgreSQL::Adapter::OID::Circle }
     let(:value_klass) { Torque::PostgreSQL::Circle }
     let(:instance) { klass.new }
-    let(:value_instance) { instance.cast([1, 2, 3]) }
+    let(:value_instance) { instance.cast_with_array_support([1, 2, 3]) }
 
     before { allow(instance).to receive(:config_class).and_return(value_klass) }
 

@@ -70,48 +70,48 @@ RSpec.describe 'Interval' do
       end
 
       it 'transforms weeks into days' do
-        reference = subject.cast(1000000)
+        reference = subject.cast_with_array_support(1000000)
         expect(subject.serialize(reference)).to eq('P11DT13H46M40S')
       end
     end
 
     context 'on cast' do
       it 'accepts nil' do
-        expect(subject.cast(nil)).to be_nil
+        expect(subject.cast_with_array_support(nil)).to be_nil
       end
 
       it 'accepts string' do
-        value = subject.cast('P1Y2M3DT4H5M6S')
+        value = subject.cast_with_array_support('P1Y2M3DT4H5M6S')
         expect(value).to be_a(ActiveSupport::Duration)
         expect(value).to eq(reference)
       end
 
       it 'accepts duration' do
-        value = subject.cast(5.days)
+        value = subject.cast_with_array_support(5.days)
         expect(value).to be_a(ActiveSupport::Duration)
         expect(value).to eql(value)
       end
 
       it 'accepts small seconds numeric' do
-        value = subject.cast(30)
+        value = subject.cast_with_array_support(30)
         expect(value).to be_a(ActiveSupport::Duration)
         expect(value).to eq(30)
       end
 
       it 'accepts long seconds numeric' do
-        value = subject.cast(reference.to_i)
+        value = subject.cast_with_array_support(reference.to_i)
         expect(value).to be_a(ActiveSupport::Duration)
         expect(value).to eq(reference)
       end
 
       it 'accepts array with Y-M-D H:M:S format' do
-        value = subject.cast([1, 2, 3, 4, 5, 6])
+        value = subject.cast_with_array_support([1, 2, 3, 4, 5, 6])
         expect(value).to be_a(ActiveSupport::Duration)
         expect(value).to eq(reference)
       end
 
       it 'accepts array with empty values' do
-        value = subject.cast([nil, 0, 12, 30, 0])
+        value = subject.cast_with_array_support([nil, 0, 12, 30, 0])
         sample = 12.hours + 30.minutes
         expect(value).to be_a(ActiveSupport::Duration)
         expect(value.inspect).to eq(sample.inspect)
@@ -119,7 +119,7 @@ RSpec.describe 'Interval' do
       end
 
       it 'accepts array with string' do
-        value = subject.cast(['45', '15'])
+        value = subject.cast_with_array_support(['45', '15'])
         sample = 45.minutes + 15.seconds
         expect(value).to be_a(ActiveSupport::Duration)
         expect(value.inspect).to eq(sample.inspect)
@@ -127,20 +127,20 @@ RSpec.describe 'Interval' do
       end
 
       it 'accepts hash' do
-        value = subject.cast({years: 1, months: 2, days: 3, hours: 4, minutes: 5, seconds: 6})
+        value = subject.cast_with_array_support({years: 1, months: 2, days: 3, hours: 4, minutes: 5, seconds: 6})
         expect(value).to be_a(ActiveSupport::Duration)
         expect(value).to eq(reference)
       end
 
       it 'accepts hash with extra elements' do
-        value = subject.cast({extra: 1, hours: 12, minutes: 30})
+        value = subject.cast_with_array_support({extra: 1, hours: 12, minutes: 30})
         sample = 12.hours + 30.minutes
         expect(value).to be_a(ActiveSupport::Duration)
         expect(value).to eq(sample)
       end
 
       it 'returns any other type of value as it is' do
-        value = subject.cast(true)
+        value = subject.cast_with_array_support(true)
         expect(value).to eql(true)
       end
     end

@@ -302,23 +302,23 @@ RSpec.describe 'Enum' do
 
     context 'on cast' do
       it 'accepts nil' do
-        expect(subject.cast(nil)).to be_nil
+        expect(subject.cast_with_array_support(nil)).to be_nil
       end
 
       it 'accepts invalid values as nil' do
-        expect(subject.cast(false)).to be_nil
-        expect(subject.cast(true)).to be_nil
-        expect(subject.cast([])).to be_nil
+        expect(subject.cast_with_array_support(false)).to be_nil
+        expect(subject.cast_with_array_support(true)).to be_nil
+        expect(subject.cast_with_array_support([])).to be_nil
       end
 
       it 'accepts string' do
-        value = subject.cast('created')
+        value = subject.cast_with_array_support('created')
         expect(value).to be_a(enum)
         expect(value).to be_eql(enum.created)
       end
 
       it 'accepts numeric' do
-        value = subject.cast(1)
+        value = subject.cast_with_array_support(1)
         expect(value).to be_a(enum)
         expect(value).to be_eql(enum.draft)
       end

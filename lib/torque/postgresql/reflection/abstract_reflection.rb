@@ -62,7 +62,7 @@ module Torque
           # Build the overlap condition (array && array) ensuring that the right
           # side has the same type as the left side
           source_attr = ::Arel::Nodes.build_quoted(Array.wrap(source_attr))
-          klass_attr.overlaps(source_attr.cast(klass_type.sql_type_metadata.sql_type))
+          klass_attr.overlaps(source_attr.cast_with_array_support(klass_type.sql_type_metadata.sql_type))
         end
 
         # TODO: Deprecate this method

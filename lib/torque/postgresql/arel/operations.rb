@@ -6,7 +6,7 @@ module Torque
       module Operations
 
         # Create a cast operation
-        def cast(type, array = false)
+        def cast_with_array_support(type, array = false)
           Nodes::Cast.new(self, type, array)
         end
 
