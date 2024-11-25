@@ -60,7 +60,7 @@ module Torque
           @physically_inherited = connection.schema_cache.dependencies(
             defined?(@table_name) ? @table_name : decorated_table_name,
           ).present?
-        rescue ActiveRecord::ConnectionNotEstablished
+        rescue ActiveRecord::ConnectionNotEstablished, ActiveRecord::NoDatabaseError
           false
         end
 
