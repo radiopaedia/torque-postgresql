@@ -8,6 +8,7 @@ require 'active_support/core_ext/date/acts_like'
 require 'active_support/core_ext/time/zones'
 require 'active_record/connection_adapters/postgresql_adapter'
 
+require 'torque/postgresql/arel'
 require 'torque/postgresql/config'
 require 'torque/postgresql/version'
 require 'torque/postgresql/collector'
