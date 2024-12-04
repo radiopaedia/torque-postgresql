@@ -14,6 +14,19 @@ module Torque
           MSG
         end
 
+        def join_id_for(owner) # :nodoc:
+          Array(join_foreign_key).map { |key|
+            result = owner._read_attribute(key)
+            if owner.class.columns_hash[key].array?
+              type = ActiveRecord::ConnectionAdapters::PostgreSQL::OID::Array.new(
+                ActiveModel::Type.lookup(owner.class.columns_hash['image_ids'].type)
+              )
+              result = type.serialize(result)
+            end
+            result
+          }
+        end
+
         private
 
           # Check if the foreign key should be pluralized

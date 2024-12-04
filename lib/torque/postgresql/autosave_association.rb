@@ -21,6 +21,35 @@ module Torque
         end
       end
 
+      def save_has_one_association(reflection)
+        return super unless reflection.connected_through_array?
+        return super if reflection.through_reflection
+
+        assn = association(reflection.name)
+        autosave = reflection.options[:autosave]
+        primary_key = Array(compute_primary_key(reflection, self)).map(&:to_s)
+        primary_key_value = primary_key.map { |key| _read_attribute(key) }
+
+        record = assn.load_target
+        if record && (
+          (autosave && record.changed_for_autosave?) ||
+          _record_changed?(reflection, record, primary_key_value)
+        )
+          foreign_key = Array(reflection.foreign_key)
+          primary_key_foreign_key_pairs = primary_key.zip(foreign_key)
+
+          primary_key_foreign_key_pairs.each do |primary_key, foreign_key|
+            association_id = _read_attribute(primary_key)
+            (record[foreign_key] ||= []).push(association_id) unless record[foreign_key]&.include?(association_id)
+          end
+          assn.set_inverse_instance(record)
+
+          raise ActiveRecord::Rollback unless record.save(validate: false)
+          return true
+        end
+        super
+      end
+
       # Ensure the right way to execute +save_collection_association+ and also
       # keep it as a single change using +build_changes+
       def save_belongs_to_many_association(reflection)

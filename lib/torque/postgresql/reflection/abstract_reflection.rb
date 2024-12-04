@@ -56,8 +56,8 @@ module Torque
             return any_value.shift.eq(::Arel::Nodes::NamedFunction.new('ANY', any_value))
           end
 
-          # If the left side is not an array, just use the IN condition
-          return klass_attr.in(source_attr) unless klass_type.try(:array)
+          # If the left side is not an array, just use the ANY condition
+          return klass_attr.eq(::Arel::Nodes::NamedFunction.new('ANY', source_attr)) unless klass_type.try(:array)
 
           # Build the overlap condition (array && array) ensuring that the right
           # side has the same type as the left side

@@ -6,9 +6,6 @@ module Torque
       module AssociationScope
 
         module ClassMethods
-          def get_bind_values(*)
-            super.flatten
-          end
         end
 
         private
